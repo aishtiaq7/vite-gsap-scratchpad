@@ -10,38 +10,46 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
-  const [count, setCount] = useState(0);
 
   const container = useRef();
-  useGSAP(() => {}, {
-    dependencies: [],
-    scope: container,
-    revertOnUpdate: true,
-  });
+  const boxRef = useRef();
+  useGSAP(
+    () => {
+      const t1 = gsap.timeline({
+        onComplete: () => {
+          //
+        },
+      });
+      t1.from(boxRef.current, {
+        scrollTrigger: {
+          markers: true,
+          trigger: boxRef.current,
+          start: "top center", // Adjust these values based on your layout
+          end: "bottom top",
+          scrub: true, // Optional: makes the animation smooth on scroll
+        },
+        rotate: 360,
+        y: -200,
+        duration: 3,
+      });
+    },
+    {
+      dependencies: [],
+      scope: container,
+      revertOnUpdate: true,
+    }
+  );
 
   return (
     <>
       <div ref={container}>
-        <div>
-          <a href="https://vitejs.dev" target="_blank">
-            <img src={viteLogo} className="logo" alt="Vite logo" />
-          </a>
-          <a href="https://react.dev" target="_blank">
-            <img src={reactLogo} className="logo react" alt="React logo" />
-          </a>
-        </div>
-        <h1>Vite + React</h1>
-        <div className="card">
-          <button onClick={() => setCount((count) => count + 1)}>
-            count is {count}
-          </button>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test HMR
-          </p>
-        </div>
-        <p className="read-the-docs">
-          Click on the Vite and React logos to learn more
-        </p>
+        <section className="section">
+        </section>
+        <section className="section">
+          <div ref={boxRef} className="box"></div>
+          <div className="circle"></div>
+        </section>
+        <section className="section"></section>
       </div>
     </>
   );
