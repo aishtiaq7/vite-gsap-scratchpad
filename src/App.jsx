@@ -15,58 +15,43 @@ function App() {
   const circleRef = useRef();
   useGSAP(
     () => {
+      // Timeline for the box
       const t1 = gsap.timeline({
         scrollTrigger: {
-          markers: true,
           trigger: boxRef.current,
-          start: "top center", // Adjust these values based on your layout
-          end: "bottom 20%",
-          scrub: 2, // Optional: makes the animation smooth on scroll
-        },
-        onComplete: () => {
-          console.log('t1 completed')
-          t2.restart();
+
+          start: "top 80%",
+          end: "top 20%",
+          scrub: 2,
+          toggleActions: "restart none none none",
         },
       });
-      t1.from(boxRef.current, {
-        rotate: 360,
-        y: -200,
+      t1.to(boxRef.current, {
+        x: -300,
         duration: 3,
-      })
-        .to(boxRef.current, {
-          rotate: 0,
-          x: -200,
-          duration: 3,
-        })
-        .to(boxRef.current, {
-          rotate: 0,
-          x: 0,
-          y: 0,
-          backgroundColor: "red",
-          duration: 3,
-        });
+      }).to(boxRef.current, {
+        x: 0,
+        duration: 3,
+      });
 
-      // Second timeline for the circle
-      // const t2 = gsap.timeline({
-      //   scrollTrigger: {
-      //     markers: true,
-      //     trigger: circleRef.current,
-      //     start: "top 80%",
-      //     end: "top 20%",
-      //     scrub: 1,
-      //   },
-      //   paused: true,
-      // });
-      const t2 = gsap.timeline({ paused: true });
+      // Timeline for the circle, with new ScrollTrigger that starts right after t1's end
+      const t2 = gsap.timeline({
+        scrollTrigger: {
+          // id:'circle',
+          trigger: circleRef.current,
+          start: "top 80%",
+          end: "top 20%",
+          scrub: 2,
+          toggleActions: "restart none none none",
+        },
+      });
+
       t2.to(circleRef.current, {
         x: 300,
-        rotation: 180,
-        duration: 2,
-      })
-      .to(circleRef.current, {
+        duration: 3,
+      }).to(circleRef.current, {
         x: 0,
-        rotation: 180,
-        duration: 2,
+        duration: 3,
       });
     },
     {
