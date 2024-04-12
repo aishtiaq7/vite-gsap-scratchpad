@@ -85,3 +85,6 @@
 .textClass{ 
   opacity: 0;
 }
+.is-active{
+  border: 2px solid red;
+}

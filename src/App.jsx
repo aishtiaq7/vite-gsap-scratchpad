@@ -47,7 +47,7 @@ function App() {
           // end: "+=200px",
           scrub: 2,
           toggleActions: "restart none none none",
-          onUpdate: (self) =>{
+          onUpdate: (self) => {
             // console.log("progress:", Math.round(self.progress * 100)),
           },
         },
@@ -60,34 +60,33 @@ function App() {
         duration: 3,
       });
 
-
-      //some Text time line: 
+      //some Text time line:
       const t3 = gsap.timeline({
         scrollTrigger: {
           markers: true,
-          trigger: someTextRef.current,
+          trigger: ".textClass",
+          // trigger: someTextRef.current,
           start: "top center",
           end: "+=15%",
           // end: "+=200px",
           scrub: 3,
           toggleActions: "restart none none none",
+          toggleClass: {targets: ".textClass", className: "is-active"},
         },
       });
       t3.from(someTextRef.current, {
         opacity: 0,
-        duration: 2,
+        duration: 0.6,
       })
-      .to(someTextRef.current, {
-        color: "white",
-        opacity: 1,
-        duration: 2,
-      })
-      .to(someTextRef.current, {
-        opacity: 0,
-        duration: 2,
-      })
-
-
+        .to(someTextRef.current, {
+          color: "white",
+          opacity: 1,
+          duration: 2,
+        })
+        .to(someTextRef.current, {
+          opacity: 0,
+          duration: 2,
+        });
     },
     {
       dependencies: [],
@@ -105,7 +104,9 @@ function App() {
           <div ref={circleRef} className="circle"></div>
         </section>
         <section className="section">
-          <h2 ref={someTextRef} className="textClass">Some Text Here</h2>
+          <h2 ref={someTextRef} className="textClass">
+            Some Text Here
+          </h2>
         </section>
         <section className="section"></section>
       </div>
