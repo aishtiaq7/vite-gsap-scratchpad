@@ -83,8 +83,18 @@
 }
 
 .textClass{ 
-  opacity: 0;
+  opacity:1;
+  color: black;
+
 }
 .is-active{
   border: 2px solid red;
+  background-color: red;
+}
+.forthSection{ 
+  text-align: center;
+}
+.DISPLAY_NONE { 
+  display: none;
+  height: 0;
 }

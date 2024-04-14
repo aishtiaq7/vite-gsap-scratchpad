@@ -67,26 +67,26 @@ function App() {
           trigger: ".textClass",
           // trigger: someTextRef.current,
           start: "top center",
-          end: "+=15%",
+          end: "+=25%",
           // end: "+=200px",
           scrub: 3,
           toggleActions: "restart none none none",
-          toggleClass: {targets: ".textClass", className: "is-active"},
+          toggleClass: { targets: ".textClass", className: "is-active" },
         },
       });
-      t3.from(someTextRef.current, {
-        opacity: 0,
-        duration: 0.6,
-      })
-        .to(someTextRef.current, {
-          color: "white",
-          opacity: 1,
-          duration: 2,
-        })
-        .to(someTextRef.current, {
-          opacity: 0,
-          duration: 2,
-        });
+      // t3.from(someTextRef.current, {
+      //   opacity: 0,
+      //   duration: 0.6,
+      // })
+      //   .to(someTextRef.current, {
+      //     color: "white",
+      //     opacity: 1,
+      //     duration: 2,
+      //   })
+      //   .to(someTextRef.current, {
+      //     opacity: 0,
+      //     duration: 2,
+      //   });
     },
     {
       dependencies: [],
@@ -98,20 +98,59 @@ function App() {
   return (
     <>
       <div ref={container}>
-        <section className="section"></section>
-        <section className="section">
+        <section className="section DISPLAY_NONE"></section>
+
+        {/* <section className="section DISPLAY_NONE">
           <div ref={boxRef} className="box"></div>
           <div ref={circleRef} className="circle"></div>
-        </section>
-        <section className="section">
+        </section> */}
+
+        <section className="section DISPLAY_NONE">
           <h2 ref={someTextRef} className="textClass">
-            Some Text Here
+            3rd Section
           </h2>
         </section>
-        <section className="section"></section>
+        <section className="section">
+          <h2 className="forthSection">4th SECTION</h2>
+          {/* <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight} /> */}
+          {/* <canvas  width={window.innerWidth} height={window.innerHeight} /> */}
+        </section>
       </div>
     </>
   );
+}
+
+function CanvasImage() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Load the first frame
+    const image = new Image();
+    image.src = "https://kozarkar.github.io/heart-animation/image_0001.webp"; // URL to your image
+    image.onload = () => {
+      // Draw the image onto the canvas
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    };
+
+    // Handle resizing
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} />;
 }
 
 export default App;
