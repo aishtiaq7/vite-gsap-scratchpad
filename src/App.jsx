@@ -110,161 +110,148 @@ function App() {
             3rd Section
           </h2>
         </section>
-        <section className="forthSection section">
+        {/* <section className="forthSection section">
           <h2 className="">4th SECTION</h2>
-          {/* <CanvasAnimation /> */}
+          <CanvasAnimation />
           <Canvas />
+        </section> */}
+
+        <section className="forthSection section">
+          <h2 className="">5th SECTION</h2>
+          <CanvasAnimation />
         </section>
+
+
+
+        <section className="section ">
+          <h2 ref={someTextRef} className="textClass">
+            3rd Section
+          </h2>
+        </section>
+        <section className="section ">
+          <h2 ref={someTextRef} className="textClass">
+            3rd Section
+          </h2>
+        </section>
+
+ <section className="section ">
+          <h2 ref={someTextRef} className="textClass">
+            3rd Section
+          </h2>
+        </section>      
       </div>
     </>
   );
 }
 
-const Canvas = (props) => {
+// const Canvas = (props) => {
+//   const canvasRef = useRef(null);
+
+//   useEffect(() => {
+//     const canvas = canvasRef.current;
+//     const context = canvas.getContext("2d");
+
+//     // Clear the canvas
+//     context.clearRect(0, 0, canvas.width, canvas.height);
+
+//     const imageObj = new Image();
+//     imageObj.onload = function () {
+//       // Draw the image on canvas
+//       context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+//     };
+//     imageObj.onerror = function () {
+//       console.error("Error in loading the image.");
+//     };
+//     // Set the source of the image
+//     imageObj.src =
+//       "https://s-media-cache-ak0.pinimg.com/236x/d7/b3/cf/d7b3cfe04c2dc44400547ea6ef94ba35.jpg";
+
+//     // Cleanup function to potentially cancel any pending frame requests
+//     const cleanup = () => {
+//       const frameId = window.requestAnimationFrame(() => {
+//         window.cancelAnimationFrame(frameId);
+//       });
+//     };
+
+//     return cleanup;
+//   }, []); // Dependencies array is empty, effect runs only once after the initial rendering.
+
+//   return (
+//     <canvas
+//       ref={canvasRef}
+//       width={props.width || 250}
+//       height={props.height || 380}
+//       className="canvasStyle"
+//     />
+//   );
+// };
+
+const CanvasAnimation = () => {
   const canvasRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    // Clear the canvas
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    const imageObj = new Image();
-    imageObj.onload = function () {
-      // Draw the image on canvas
-      context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
-    };
-    imageObj.onerror = function () {
-      console.error("Error in loading the image.");
-    };
-    // Set the source of the image
-    imageObj.src =
-      "https://s-media-cache-ak0.pinimg.com/236x/d7/b3/cf/d7b3cfe04c2dc44400547ea6ef94ba35.jpg";
-
-    // Cleanup function to potentially cancel any pending frame requests
-    const cleanup = () => {
-      const frameId = window.requestAnimationFrame(() => {
-        window.cancelAnimationFrame(frameId);
-      });
-    };
-
-    return cleanup;
-  }, []); // Dependencies array is empty, effect runs only once after the initial rendering.
-
-  return (
-    <canvas
-      ref={canvasRef}
-      width={props.width || 300}
-      height={props.height || 150}
-      className="canvasStyle"
-    />
-  );
-};
-
-function CanvasAnimation() {
   const [images, setImages] = useState([]);
-  const canvasRef = useRef(null);
+  const frameCount = 241;
 
   useEffect(() => {
-    if (!canvasRef.current) {
-      console.log("Canvas not available");
-      return;
-    }
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-    const context = canvasRef.current.getContext("2d");
-    canvasRef.current.width = window.innerWidth;
-    canvasRef.current.height = window.innerHeight;
+      function loadImages() {
+          let loadedImages = [];
+          for (let i = 0; i < frameCount; i++) {
+              const img = new Image();
+              img.onload = () => render(i);  // Setting up onload before src to ensure the image is loaded before drawing.
+              img.src = `https://kozarkar.github.io/heart-animation/image_${(i + 1).toString().padStart(4, "0")}.webp`;
+              loadedImages.push(img);
+          }
+          setImages(loadedImages);
+      }
 
-    function loadImages(frameCount) {
-      const imgPromises = Array.from({ length: frameCount }, (_, i) => {
-        const img = new Image();
-        const index = (i + 1).toString().padStart(4, "0");
-        img.src = `https://kozarkar.github.io/heart-animation/image_${index}.webp`;
-        return new Promise((resolve, reject) => {
-          img.onload = () => {
-            console.log(`Image ${img.src} loaded successfully`);
-            resolve(img);
-          };
-          img.onerror = () => {
-            console.log(`Error loading image ${img.src}`);
-            reject(new Error(`Error loading image ${img.src}`));
-          };
-        });
-      });
-      return Promise.all(imgPromises);
-    }
+      loadImages();
 
-    loadImages(241).then((loadedImages) => {
-      setImages(loadedImages);
-      gsap.to(loadedImages, {
-        frame: loadedImages.length - 1,
-        snap: "frame",
-        ease: "none",
-        scrollTrigger: {
-          trigger: canvasRef.current,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1,
-          markers: true,
-          onUpdate: (self) => {
-            const frameIndex = Math.floor(
-              self.progress * (loadedImages.length - 1)
-            );
-            drawImageProperly(
-              context,
-              loadedImages[frameIndex],
-              window.innerWidth,
-              window.innerHeight
-            );
-          },
-        },
-      });
-    });
+      return () => {
+          window.removeEventListener("resize", () => {
+              canvas.width = window.innerWidth;
+              canvas.height = window.innerHeight;
+              render(0);
+          });
+      };
+  }, []);
 
-    const handleResize = () => {
-      canvasRef.current.width = window.innerWidth;
-      canvasRef.current.height = window.innerHeight;
-      context.clearRect(
-        0,
-        0,
-        canvasRef.current.width,
-        canvasRef.current.height
-      );
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+  useEffect(() => {
+      if (images.length === frameCount) {
+          const sequence = { frame: 0 };
+          gsap.to(sequence, {
+              frame: frameCount - 1,
+              snap: "frame",
+              ease: "none",
+              scrollTrigger: {
+                  trigger: canvasRef.current,
+                  start: "top top",
+                  end: "bottom bottom",
+                  scrub: 1,
+                  onUpdate: () => {
+                      render(sequence.frame);
+                  },
+              }
+          });
+      }
   }, [images]);
 
-  function drawImageProperly(ctx, img, canvasWidth, canvasHeight) {
-    if (!img) return; // Ensure the image is loaded
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    const hRatio = canvasWidth / img.width;
-    const vRatio = canvasHeight / img.height;
-    const ratio = Math.min(hRatio, vRatio);
-    const centerShift_x = (canvasWidth - img.width * ratio) / 2;
-    const centerShift_y = (canvasHeight - img.height * ratio) / 2;
-    ctx.drawImage(
-      img,
-      0,
-      0,
-      img.width,
-      img.height,
-      centerShift_x,
-      centerShift_y,
-      img.width * ratio,
-      img.height * ratio
-    );
+  function render(index) {
+      const ctx = canvasRef.current.getContext('2d');
+      const img = images[index];
+      if (img && ctx) {
+          const ratio = Math.max(canvasRef.current.width / img.width, canvasRef.current.height / img.height);
+          const x = (canvasRef.current.width - img.width * ratio) / 2;
+          const y = (canvasRef.current.height - img.height * ratio) / 2;
+          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+          ctx.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * ratio, img.height * ratio);
+      }
   }
 
-  return (
-    <canvas
-      ref={canvasRef}
-      // width={200}
-      // height={200}
-      style={{ backgroundColor: "pink" }}
-    />
-  );
-}
+  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />;
+};
 
 export default App;
