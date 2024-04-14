@@ -92,7 +92,17 @@
   background-color: red;
 }
 .forthSection{ 
-  text-align: center;
+  /* text-align: center; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+
+  background-color: white;
+
+  min-height: 100vh;
+  background-color: lightblue !important;
 }
 .DISPLAY_NONE { 
   display: none;

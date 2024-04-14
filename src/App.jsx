@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 
@@ -63,7 +63,7 @@ function App() {
       //some Text time line:
       const t3 = gsap.timeline({
         scrollTrigger: {
-          markers: true,
+          // markers: true,
           trigger: ".textClass",
           // trigger: someTextRef.current,
           start: "top center",
@@ -110,47 +110,112 @@ function App() {
             3rd Section
           </h2>
         </section>
-        <section className="section">
-          <h2 className="forthSection">4th SECTION</h2>
-          {/* <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight} /> */}
-          {/* <canvas  width={window.innerWidth} height={window.innerHeight} /> */}
+        <section className="forthSection section">
+          <h2 className="">4th SECTION</h2>
+          {/* <CanvasImage /> */}
+          <CanvasAnimation />
         </section>
       </div>
     </>
   );
 }
 
-function CanvasImage() {
+function CanvasAnimation() {
+  const [images, setImages] = useState([]);
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    if (!canvasRef.current) {
+      console.log("Canvas not available");
+      return;
+    }
 
-    // Load the first frame
-    const image = new Image();
-    image.src = "https://kozarkar.github.io/heart-animation/image_0001.webp"; // URL to your image
-    image.onload = () => {
-      // Draw the image onto the canvas
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    };
+    const context = canvasRef.current.getContext("2d");
+    canvasRef.current.width = window.innerWidth;
+    canvasRef.current.height = window.innerHeight;
 
-    // Handle resizing
+    function loadImages(frameCount) {
+      const imgPromises = Array.from({ length: frameCount }, (_, i) => {
+          const img = new Image();
+          const index = (i + 1).toString().padStart(4, '0');
+          img.src = `https://kozarkar.github.io/heart-animation/image_${index}.webp`;
+          return new Promise((resolve, reject) => {
+              img.onload = () => {
+                  console.log(`Image ${img.src} loaded successfully`);
+                  resolve(img);
+              };
+              img.onerror = () => {
+                  console.log(`Error loading image ${img.src}`);
+                  reject(new Error(`Error loading image ${img.src}`));
+              };
+          });
+      });
+      return Promise.all(imgPromises);
+  }
+
+    loadImages(241).then((loadedImages) => {
+      setImages(loadedImages);
+      gsap.to(loadedImages, {
+        frame: loadedImages.length - 1,
+        snap: "frame",
+        ease: "none",
+        scrollTrigger: {
+          trigger: canvasRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+          markers: true,
+          onUpdate: (self) => {
+            const frameIndex = Math.floor(
+              self.progress * (loadedImages.length - 1)
+            );
+            drawImageProperly(
+              context,
+              loadedImages[frameIndex],
+              window.innerWidth,
+              window.innerHeight
+            );
+          },
+        },
+      });
+    });
+
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      canvasRef.current.width = window.innerWidth;
+      canvasRef.current.height = window.innerHeight;
+      context.clearRect(
+        0,
+        0,
+        canvasRef.current.width,
+        canvasRef.current.height
+      );
     };
     window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [images]);
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  function drawImageProperly(ctx, img, canvasWidth, canvasHeight) {
+    if (!img) return; // Ensure the image is loaded
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    const hRatio = canvasWidth / img.width;
+    const vRatio = canvasHeight / img.height;
+    const ratio = Math.min(hRatio, vRatio);
+    const centerShift_x = (canvasWidth - img.width * ratio) / 2;
+    const centerShift_y = (canvasHeight - img.height * ratio) / 2;
+    ctx.drawImage(
+      img,
+      0,
+      0,
+      img.width,
+      img.height,
+      centerShift_x,
+      centerShift_y,
+      img.width * ratio,
+      img.height * ratio
+    );
+  }
 
-  return <canvas ref={canvasRef} />;
+  return <canvas ref={canvasRef} width={200} height={200} style={{  backgroundColor: "pink"}} />;
 }
 
 export default App;
