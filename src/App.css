@@ -108,3 +108,6 @@
   display: none;
   height: 0;
 }
+.canvasStyle{
+  border: 4px solid black;
+}

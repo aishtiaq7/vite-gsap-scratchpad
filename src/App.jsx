@@ -112,13 +112,55 @@ function App() {
         </section>
         <section className="forthSection section">
           <h2 className="">4th SECTION</h2>
-          {/* <CanvasImage /> */}
-          <CanvasAnimation />
+          {/* <CanvasAnimation /> */}
+          <Canvas />
         </section>
       </div>
     </>
   );
 }
+
+const Canvas = (props) => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+
+    // Clear the canvas
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    const imageObj = new Image();
+    imageObj.onload = function () {
+      // Draw the image on canvas
+      context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
+    };
+    imageObj.onerror = function () {
+      console.error("Error in loading the image.");
+    };
+    // Set the source of the image
+    imageObj.src =
+      "https://s-media-cache-ak0.pinimg.com/236x/d7/b3/cf/d7b3cfe04c2dc44400547ea6ef94ba35.jpg";
+
+    // Cleanup function to potentially cancel any pending frame requests
+    const cleanup = () => {
+      const frameId = window.requestAnimationFrame(() => {
+        window.cancelAnimationFrame(frameId);
+      });
+    };
+
+    return cleanup;
+  }, []); // Dependencies array is empty, effect runs only once after the initial rendering.
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={props.width || 300}
+      height={props.height || 150}
+      className="canvasStyle"
+    />
+  );
+};
 
 function CanvasAnimation() {
   const [images, setImages] = useState([]);
@@ -136,22 +178,22 @@ function CanvasAnimation() {
 
     function loadImages(frameCount) {
       const imgPromises = Array.from({ length: frameCount }, (_, i) => {
-          const img = new Image();
-          const index = (i + 1).toString().padStart(4, '0');
-          img.src = `https://kozarkar.github.io/heart-animation/image_${index}.webp`;
-          return new Promise((resolve, reject) => {
-              img.onload = () => {
-                  console.log(`Image ${img.src} loaded successfully`);
-                  resolve(img);
-              };
-              img.onerror = () => {
-                  console.log(`Error loading image ${img.src}`);
-                  reject(new Error(`Error loading image ${img.src}`));
-              };
-          });
+        const img = new Image();
+        const index = (i + 1).toString().padStart(4, "0");
+        img.src = `https://kozarkar.github.io/heart-animation/image_${index}.webp`;
+        return new Promise((resolve, reject) => {
+          img.onload = () => {
+            console.log(`Image ${img.src} loaded successfully`);
+            resolve(img);
+          };
+          img.onerror = () => {
+            console.log(`Error loading image ${img.src}`);
+            reject(new Error(`Error loading image ${img.src}`));
+          };
+        });
       });
       return Promise.all(imgPromises);
-  }
+    }
 
     loadImages(241).then((loadedImages) => {
       setImages(loadedImages);
@@ -215,7 +257,14 @@ function CanvasAnimation() {
     );
   }
 
-  return <canvas ref={canvasRef} width={200} height={200} style={{  backgroundColor: "pink"}} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      // width={200}
+      // height={200}
+      style={{ backgroundColor: "pink" }}
+    />
+  );
 }
 
 export default App;
