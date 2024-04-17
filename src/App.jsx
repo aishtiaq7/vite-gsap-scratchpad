@@ -67,9 +67,9 @@ function App() {
           trigger: ".textClass",
           // trigger: someTextRef.current,
           start: "top center",
-          end: "+=25%",
+          end: "+=55%",
           // end: "+=200px",
-          scrub: 3,
+          scrub: 0.5,
           toggleActions: "restart none none none",
           toggleClass: { targets: ".textClass", className: "is-active" },
         },
@@ -105,11 +105,11 @@ function App() {
           <div ref={circleRef} className="circle"></div>
         </section> */}
 
-        <section className="section DISPLAY_NONE">
+        {/* <section className="section DISPLAY_NONE">
           <h2 ref={someTextRef} className="textClass">
             3rd Section
           </h2>
-        </section>
+        </section> */}
         {/* <section className="forthSection section">
           <h2 className="">4th SECTION</h2>
           <CanvasAnimation />
@@ -121,8 +121,6 @@ function App() {
           <CanvasAnimation />
         </section>
 
-
-
         <section className="section ">
           <h2 ref={someTextRef} className="textClass">
             3rd Section
@@ -134,11 +132,11 @@ function App() {
           </h2>
         </section>
 
- <section className="section ">
+        {/* <section className="section ">
           <h2 ref={someTextRef} className="textClass">
             3rd Section
           </h2>
-        </section>      
+        </section> */}
       </div>
     </>
   );
@@ -189,69 +187,98 @@ function App() {
 const CanvasAnimation = () => {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
-  const frameCount = 241;
+  const frameCount = 147; // Update the frame count according to new image source
 
   useEffect(() => {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    canvas.width = 1080;
+    canvas.height = 720;
+    // canvas.width = window.innerWidth;
+    // canvas.height = window.innerHeight;
 
-      function loadImages() {
-          let loadedImages = [];
-          for (let i = 0; i < frameCount; i++) {
-              const img = new Image();
-              img.onload = () => render(i);  // Setting up onload before src to ensure the image is loaded before drawing.
-              img.src = `https://kozarkar.github.io/heart-animation/image_${(i + 1).toString().padStart(4, "0")}.webp`;
-              loadedImages.push(img);
+    // Function to generate image URLs based on new source
+    const currentFrame = (index) =>
+      `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(
+        index + 1
+      )
+        .toString()
+        .padStart(4, "0")}.jpg`;
+
+    function loadImages() {
+      let loadedImages = [];
+      for (let i = 0; i < frameCount; i++) {
+        const img = new Image();
+        img.onload = () => {
+          if (i === 0) render(0); // Render first image immediately for instant feedback
+          loadedImages[i] = img; // Assign to index to maintain order
+          if (loadedImages.filter(Boolean).length === frameCount) {
+            setImages(loadedImages); // Only update state when all images are loaded
           }
-          setImages(loadedImages);
+        };
+        img.onerror = () => console.error(`Failed to load image ${i}`);
+        img.src = currentFrame(i);
       }
+    }
 
-      loadImages();
+    loadImages();
 
-      return () => {
-          window.removeEventListener("resize", () => {
-              canvas.width = window.innerWidth;
-              canvas.height = window.innerHeight;
-              render(0);
-          });
-      };
+    return () => {
+      window.removeEventListener("resize", () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        render(0);
+      });
+    };
   }, []);
 
   useEffect(() => {
-      if (images.length === frameCount) {
-          const sequence = { frame: 0 };
-          gsap.to(sequence, {
-              frame: frameCount - 1,
-              snap: "frame",
-              ease: "none",
-              scrollTrigger: {
-                  trigger: canvasRef.current,
-                  start: "top top",
-                  end: "bottom bottom",
-                  scrub: 1,
-                  onUpdate: () => {
-                      render(sequence.frame);
-                  },
-              }
-          });
-      }
+    if (images.length === frameCount) {
+      const sequence = { frame: 0 };
+      gsap.to(sequence, {
+        frame: frameCount - 1,
+        snap: "frame",
+        ease: "none",
+        scrollTrigger: {
+          markers: true,
+          trigger: canvasRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1.2,
+          onUpdate: () => {
+            render(Math.floor(sequence.frame));
+          },
+        },
+      });
+    }
   }, [images]);
 
   function render(index) {
-      const ctx = canvasRef.current.getContext('2d');
-      const img = images[index];
-      if (img && ctx) {
-          const ratio = Math.max(canvasRef.current.width / img.width, canvasRef.current.height / img.height);
-          const x = (canvasRef.current.width - img.width * ratio) / 2;
-          const y = (canvasRef.current.height - img.height * ratio) / 2;
-          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          ctx.drawImage(img, 0, 0, img.width, img.height, x, y, img.width * ratio, img.height * ratio);
-      }
+    const ctx = canvasRef.current.getContext("2d");
+    const img = images[index];
+    if (img && ctx) {
+      const ratio = Math.max(
+        canvasRef.current.width / img.width,
+        canvasRef.current.height / img.height
+      );
+      const x = (canvasRef.current.width - img.width * ratio) / 2;
+      const y = (canvasRef.current.height - img.height * ratio) / 2;
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.drawImage(
+        img,
+        0,
+        0,
+        img.width,
+        img.height,
+        x,
+        y,
+        img.width * ratio,
+        img.height * ratio
+      );
+    }
   }
 
-  return <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />;
+  return <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default App;
