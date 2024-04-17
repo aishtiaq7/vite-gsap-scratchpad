@@ -1,7 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-
 import "./App.css";
 
 import { useGSAP } from "@gsap/react";
@@ -115,48 +112,6 @@ function App() {
   );
 }
 
-// const Canvas = (props) => {
-//   const canvasRef = useRef(null);
-
-//   useEffect(() => {
-//     const canvas = canvasRef.current;
-//     const context = canvas.getContext("2d");
-
-//     // Clear the canvas
-//     context.clearRect(0, 0, canvas.width, canvas.height);
-
-//     const imageObj = new Image();
-//     imageObj.onload = function () {
-//       // Draw the image on canvas
-//       context.drawImage(imageObj, 0, 0, canvas.width, canvas.height);
-//     };
-//     imageObj.onerror = function () {
-//       console.error("Error in loading the image.");
-//     };
-//     // Set the source of the image
-//     imageObj.src =
-//       "https://s-media-cache-ak0.pinimg.com/236x/d7/b3/cf/d7b3cfe04c2dc44400547ea6ef94ba35.jpg";
-
-//     // Cleanup function to potentially cancel any pending frame requests
-//     const cleanup = () => {
-//       const frameId = window.requestAnimationFrame(() => {
-//         window.cancelAnimationFrame(frameId);
-//       });
-//     };
-
-//     return cleanup;
-//   }, []); // Dependencies array is empty, effect runs only once after the initial rendering.
-
-//   return (
-//     <canvas
-//       ref={canvasRef}
-//       width={props.width || 250}
-//       height={props.height || 380}
-//       className="canvasStyle"
-//     />
-//   );
-// };
-
 const CanvasAnimation = () => {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
@@ -167,8 +122,6 @@ const CanvasAnimation = () => {
     const ctx = canvas.getContext("2d");
     canvas.width = 1080;
     canvas.height = 720;
-    // canvas.width = window.innerWidth;
-    // canvas.height = window.innerHeight;
 
     // Function to generate image URLs based on new source
     const currentFrame = (index) =>
@@ -218,7 +171,8 @@ const CanvasAnimation = () => {
           start: "top 50%",
           end: "bottom bottom",
           scrub: 1.2,
-          onUpdate: () => {
+          onUpdate: (self) => {
+            // console.log('self.progress:', self.progress);
             render(Math.floor(sequence.frame));
           },
         },
@@ -227,6 +181,7 @@ const CanvasAnimation = () => {
   }, [images]);
 
   function render(index) {
+    console.log('index:', index);
     const ctx = canvasRef.current.getContext("2d");
     const img = images[index];
     if (img && ctx) {
@@ -251,7 +206,7 @@ const CanvasAnimation = () => {
     }
   }
 
-  return <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />;
+  return <canvas ref={canvasRef} style={{ width: "100%", height: "auto" }} />;
 };
 
 export default App;
