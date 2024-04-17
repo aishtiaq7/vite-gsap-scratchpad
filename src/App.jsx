@@ -12,100 +12,97 @@ function App() {
   const circleRef = useRef();
   const someTextRef = useRef();
 
-  useGSAP(
-    () => {
-      // Timeline for the box
-      const t1 = gsap.timeline({
-        scrollTrigger: {
-          trigger: boxRef.current,
+  // useGSAP(
+  //   () => {
+  //     const t1 = gsap.timeline({
+  //       scrollTrigger: {
+  //         trigger: boxRef.current,
 
-          start: "top 80%",
-          end: "top 20%",
-          scrub: 2,
-          toggleActions: "restart none none none",
-        },
-      });
-      t1.to(boxRef.current, {
-        x: -300,
-        duration: 3,
-      }).to(boxRef.current, {
-        x: 0,
-        duration: 3,
-      });
+  //         start: "top 80%",
+  //         end: "top 20%",
+  //         scrub: 2,
+  //         toggleActions: "restart none none none",
+  //       },
+  //     });
+  //     t1.to(boxRef.current, {
+  //       x: -300,
+  //       duration: 3,
+  //     }).to(boxRef.current, {
+  //       x: 0,
+  //       duration: 3,
+  //     });
 
-      // Timeline for the circle, with new ScrollTrigger that starts right after t1's end
-      const t2 = gsap.timeline({
-        scrollTrigger: {
-          id: "circle",
-          markers: false,
-          trigger: circleRef.current,
-          start: "top 80%",
-          end: "top 20%",
-          // end: "+=200px",
-          scrub: 2,
-          toggleActions: "restart none none none",
-          onUpdate: (self) => {
-            // console.log("progress:", Math.round(self.progress * 100)),
-          },
-        },
-      });
-      t2.to(circleRef.current, {
-        x: 300,
-        duration: 3,
-      }).to(circleRef.current, {
-        x: 0,
-        duration: 3,
-      });
+  //     const t2 = gsap.timeline({
+  //       scrollTrigger: {
+  //         id: "circle",
+  //         markers: false,
+  //         trigger: circleRef.current,
+  //         start: "top 80%",
+  //         end: "top 20%",
+  //         scrub: 2,
+  //         toggleActions: "restart none none none",
+  //         onUpdate: (self) => {
+  //         },
+  //       },
+  //     });
+  //     t2.to(circleRef.current, {
+  //       x: 300,
+  //       duration: 3,
+  //     }).to(circleRef.current, {
+  //       x: 0,
+  //       duration: 3,
+  //     });
 
-      //some Text time line:
-      const t3 = gsap.timeline({
-        scrollTrigger: {
-          // markers: true,
-          trigger: ".textClass",
-          // trigger: someTextRef.current,
-          start: "top center",
-          end: "+=55%",
-          // end: "+=200px",
-          scrub: 0.5,
-          toggleActions: "restart none none none",
-          toggleClass: { targets: ".textClass", className: "is-active" },
-        },
-      });
-      // t3.from(someTextRef.current, {
-      //   opacity: 0,
-      //   duration: 0.6,
-      // })
-      //   .to(someTextRef.current, {
-      //     color: "white",
-      //     opacity: 1,
-      //     duration: 2,
-      //   })
-      //   .to(someTextRef.current, {
-      //     opacity: 0,
-      //     duration: 2,
-      //   });
-    },
-    {
-      dependencies: [],
-      scope: container,
-      revertOnUpdate: true,
-    }
-  );
+  //     //some Text time line:
+  //     const t3 = gsap.timeline({
+  //       scrollTrigger: {
+  //         // markers: true,
+  //         trigger: ".textClass",
+  //         // trigger: someTextRef.current,
+  //         start: "top center",
+  //         end: "+=55%",
+  //         // end: "+=200px",
+  //         scrub: 0.5,
+  //         toggleActions: "restart none none none",
+  //         toggleClass: { targets: ".textClass", className: "is-active" },
+  //       },
+  //     });
+  //     // t3.from(someTextRef.current, {
+  //     //   opacity: 0,
+  //     //   duration: 0.6,
+  //     // })
+  //     //   .to(someTextRef.current, {
+  //     //     color: "white",
+  //     //     opacity: 1,
+  //     //     duration: 2,
+  //     //   })
+  //     //   .to(someTextRef.current, {
+  //     //     opacity: 0,
+  //     //     duration: 2,
+  //     //   });
+  //   },
+  //   {
+  //     dependencies: [],
+  //     scope: container,
+  //     revertOnUpdate: true,
+  //   }
+  // );
 
   return (
     <>
       <div ref={container}>
-        <section className="section"></section>
+        {/* <section className="section"></section> */}
 
-        <section className="forthSection section">
-          <h2 className="">IMAGE SEQUENCE</h2>
+        <h2 className="title">IMAGE SEQUENCE</h2>
+        <section className="forthSection ">
           <CanvasAnimation />
         </section>
 
-        <section className="section ">
-          <h2 className="textClass">
-            3rd Section
-          </h2>
+        <section className="section">
+          <h2 className="textClass">3rd Section</h2>
+        </section>
+        <section className="section">
+          <h2 className="textClass">3rd Section</h2>
         </section>
       </div>
     </>
@@ -159,6 +156,8 @@ const CanvasAnimation = () => {
   }, []);
 
   useEffect(() => {
+    render(0);
+
     if (images.length === frameCount) {
       const sequence = { frame: 0 };
       gsap.to(sequence, {
@@ -166,13 +165,14 @@ const CanvasAnimation = () => {
         snap: "frame",
         ease: "none",
         scrollTrigger: {
+          id: "img-sequence",
           markers: true,
           trigger: canvasRef.current,
-          start: "top 50%",
-          end: "bottom bottom",
+          start: "top top",
+          end: "bottom 10%",
           scrub: 1.2,
+          pin: true,
           onUpdate: (self) => {
-            // console.log('self.progress:', self.progress);
             render(Math.floor(sequence.frame));
           },
         },
@@ -180,8 +180,9 @@ const CanvasAnimation = () => {
     }
   }, [images]);
 
+
   function render(index) {
-    console.log('index:', index);
+    console.log("index:", index);
     const ctx = canvasRef.current.getContext("2d");
     const img = images[index];
     if (img && ctx) {
