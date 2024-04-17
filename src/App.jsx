@@ -98,45 +98,18 @@ function App() {
   return (
     <>
       <div ref={container}>
-        <section className="section DISPLAY_NONE"></section>
-
-        {/* <section className="section DISPLAY_NONE">
-          <div ref={boxRef} className="box"></div>
-          <div ref={circleRef} className="circle"></div>
-        </section> */}
-
-        {/* <section className="section DISPLAY_NONE">
-          <h2 ref={someTextRef} className="textClass">
-            3rd Section
-          </h2>
-        </section> */}
-        {/* <section className="forthSection section">
-          <h2 className="">4th SECTION</h2>
-          <CanvasAnimation />
-          <Canvas />
-        </section> */}
+        <section className="section"></section>
 
         <section className="forthSection section">
-          <h2 className="">5th SECTION</h2>
+          <h2 className="">IMAGE SEQUENCE</h2>
           <CanvasAnimation />
         </section>
 
         <section className="section ">
-          <h2 ref={someTextRef} className="textClass">
+          <h2 className="textClass">
             3rd Section
           </h2>
         </section>
-        <section className="section ">
-          <h2 ref={someTextRef} className="textClass">
-            3rd Section
-          </h2>
-        </section>
-
-        {/* <section className="section ">
-          <h2 ref={someTextRef} className="textClass">
-            3rd Section
-          </h2>
-        </section> */}
       </div>
     </>
   );
@@ -242,7 +215,7 @@ const CanvasAnimation = () => {
         scrollTrigger: {
           markers: true,
           trigger: canvasRef.current,
-          start: "top top",
+          start: "top 50%",
           end: "bottom bottom",
           scrub: 1.2,
           onUpdate: () => {
