@@ -8,9 +8,6 @@ gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const container = useRef();
-  const boxRef = useRef();
-  const circleRef = useRef();
-  const someTextRef = useRef();
 
   // useGSAP(
   //   () => {
@@ -87,6 +84,47 @@ function App() {
   //     revertOnUpdate: true,
   //   }
   // );
+
+  useGSAP(
+    () => {
+      const t1 = gsap.timeline({
+        scrollTrigger: {
+          markers: true,
+          trigger: ".title",
+          start: "top top",
+          end: "+=700",
+          pinSpacing: false,
+          scrub: true,
+          toggleActions: "restart none none none",
+          pin: true,
+          // scrub: 1,
+        },
+      });
+      // t1.to(".title", {
+      //   color: "red",
+      //   opacity: 1,
+      //   duration: 2,
+      // });
+    },
+    {
+      dependencies: [],
+      scope: container,
+      revertOnUpdate: true,
+    }
+  );
+
+  // useEffect(() => {
+  //   ScrollTrigger.create({
+  //     trigger: ".title",
+  //     start: "top top",
+  //     end: "+=700",
+  //     pin: true,
+  //     pinSpacing: false,
+  //     scrub: 1,
+  //     markers: true,
+  //     toggleActions: "restart none none none",
+  //   });
+  // }, []);
 
   return (
     <>
@@ -166,7 +204,7 @@ const CanvasAnimation = () => {
         ease: "none",
         scrollTrigger: {
           id: "img-sequence",
-          markers: true,
+          markers: false,
           trigger: canvasRef.current,
           start: "top top",
           end: "bottom 10%",
@@ -180,9 +218,7 @@ const CanvasAnimation = () => {
     }
   }, [images]);
 
-
   function render(index) {
-    console.log("index:", index);
     const ctx = canvasRef.current.getContext("2d");
     const img = images[index];
     if (img && ctx) {
