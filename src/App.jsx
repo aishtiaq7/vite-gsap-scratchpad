@@ -107,17 +107,17 @@ function App() {
   //     //   duration: 2,
   //     // });
   //   },
-  //   {
-  //     dependencies: [],
-  //     scope: container,
-  //     revertOnUpdate: true,
-  //   }
+  // {
+  //   dependencies: [],
+  //   scope: container,
+  //   revertOnUpdate: true,
+  // }
   // );
 
   // useEffect(() => {
   //   ScrollTrigger.create({
-  //     trigger: ".sdf",
-  //     start: "top top",
+  //     trigger: ".textClass",
+  //     start: "top 40%",
   //     end: "+=700",
   //     pin: true,
   //     pinSpacing: true,
@@ -126,6 +126,86 @@ function App() {
   //     toggleActions: "restart none none none",
   //   });
   // }, []);
+
+  // WRONG:  X X X
+  // useEffect(
+  //   () => {
+  //     const textElements = gsap.utils.toArray(".textClass");
+
+  //     textElements.forEach((text) => {
+  //       const tl = gsap.timeline({
+  //         scrollTrigger: {
+  //           trigger: text,
+  //           start: "top 30%",
+  //           end: "top top",
+  //           scrub: true,
+  //           markers: true,
+  //           toggleActions: "restart pause reverse pause",
+  //           pin: true,
+  //           pinSpacing: false,
+  //         },
+  //       });
+
+  //       tl.fromTo(
+  //         text,
+  //         { color: "black", autoAlpha: 0 },
+  //         { color: "white", autoAlpha: 1, duration: 2 }
+  //       )
+  //         .to(text, {
+  //           color: "red", // Optional: change to another color
+  //           duration: 1,
+  //         })
+  //         .to(text, {
+  //           autoAlpha: 0,
+  //         });
+  //     });
+  //   },
+  //   {
+  //     dependencies: [],
+  //     scope: container,
+  //     revertOnUpdate: true,
+  //   }
+  // );
+
+  useGSAP(
+    () => {
+      const textElements = gsap.utils.toArray(".textClass");
+
+      textElements.forEach((text) => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: text,
+            start: "top 10%",
+            end: "+=600",
+            scrub: true,
+            markers: true,
+            toggleActions: "restart pause reverse pause",
+            pin: false,
+            pinSpacing: false,
+          },
+        });
+
+        tl.fromTo(
+          text,
+          { autoAlpha: 0},
+          { color: "white", autoAlpha: 1, duration: 5 }
+        )
+          .to(text, {
+            color: "white",
+            duration: 5,
+          })
+          .to(text, {
+            duration: 3,
+            autoAlpha: 0,
+          });
+      });
+    },
+    {
+      dependencies: [],
+      scope: container.current,
+      revertOnUpdate: true,
+    }
+  );
 
   return (
     <>
