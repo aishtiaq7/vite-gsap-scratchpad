@@ -122,13 +122,13 @@ function App() {
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: text,
-            start: "top 10%",
+            start: "top 50%",
             end: "+=900",
             scrub: true,
             markers: true,
             toggleActions: "restart pause reverse pause",
-            pin: false,
-            pinSpacing: false,
+            pin: true,
+            pinSpacing: true,
           },
         });
 
