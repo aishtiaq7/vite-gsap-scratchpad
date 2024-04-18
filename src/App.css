@@ -3,6 +3,10 @@
   padding: 0;
 }
 
+body { 
+  background-color: black;
+}
+
 #root {
   margin: 0;
   padding: 0;
@@ -19,7 +23,7 @@ body {
   width: 100%;
 
   /* background-color: pink; */
-  border: 2px solid red;
+  border: 2px dotted red;
 
 }
 
@@ -31,18 +35,6 @@ body {
   align-items: center;
 
   position: relative;
-}
-
-.box {
-  background-color: white;
-  width: 7rem;
-  height: 7rem;
-}
-.circle {
-  border-radius: 50%;
-  background-color: black;
-  width: 7rem;
-  height: 7rem;
 }
 
 .textClass{ 
@@ -79,10 +71,13 @@ canvas {
 
 .secondSection{
   /* z-index: 12; */
-  background-color: green;
+  /* background-color: lightblue; */
   display: flex;
   justify-content: center;
   align-items: center;
 
+}
 
+.thirdSection {
+  /* background-color: black !important; */
 }

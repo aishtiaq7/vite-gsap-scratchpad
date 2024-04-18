@@ -138,7 +138,7 @@ function App() {
         <section className="section secondSection">
           <h2 className="textClass">2nd here</h2>
         </section>
-        <section className="section">
+        <section className="section thirdSection">
           <h2 className="textClass">3rd - Content should be here</h2>
         </section>
       </div>
@@ -158,12 +158,16 @@ const CanvasAnimation = () => {
     canvas.height = 720;
 
     // Function to generate image URLs based on new source
+    // const currentFrame = (index) =>
+    //   `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(
+    //     index + 1
+    //   )
+    //     .toString()
+    //     .padStart(4, "0")}.jpg`;
+
+    // v.2 :
     const currentFrame = (index) =>
-      `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(
-        index + 1
-      )
-        .toString()
-        .padStart(4, "0")}.jpg`;
+      `/imgsequence/${(index + 1).toString().padStart(4, "0")}.jpg`;
 
     function loadImages() {
       let loadedImages = [];
@@ -179,8 +183,8 @@ const CanvasAnimation = () => {
         img.onerror = () => console.error(`Failed to load image ${i}`);
         img.src = currentFrame(i);
       }
-      if(loadImages.length === frameCount){
-         console.log('loaded framesss!, TODO initital render')
+      if (loadImages.length === frameCount) {
+        console.log("loaded framesss!, TODO initital render");
       }
     }
 
