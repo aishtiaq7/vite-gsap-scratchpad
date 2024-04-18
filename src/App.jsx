@@ -114,59 +114,6 @@ function App() {
   // }
   // );
 
-  // useEffect(() => {
-  //   ScrollTrigger.create({
-  //     trigger: ".textClass",
-  //     start: "top 40%",
-  //     end: "+=700",
-  //     pin: true,
-  //     pinSpacing: true,
-  //     scrub: 1,
-  //     markers: true,
-  //     toggleActions: "restart none none none",
-  //   });
-  // }, []);
-
-  // WRONG:  X X X
-  // useEffect(
-  //   () => {
-  //     const textElements = gsap.utils.toArray(".textClass");
-
-  //     textElements.forEach((text) => {
-  //       const tl = gsap.timeline({
-  //         scrollTrigger: {
-  //           trigger: text,
-  //           start: "top 30%",
-  //           end: "top top",
-  //           scrub: true,
-  //           markers: true,
-  //           toggleActions: "restart pause reverse pause",
-  //           pin: true,
-  //           pinSpacing: false,
-  //         },
-  //       });
-
-  //       tl.fromTo(
-  //         text,
-  //         { color: "black", autoAlpha: 0 },
-  //         { color: "white", autoAlpha: 1, duration: 2 }
-  //       )
-  //         .to(text, {
-  //           color: "red", // Optional: change to another color
-  //           duration: 1,
-  //         })
-  //         .to(text, {
-  //           autoAlpha: 0,
-  //         });
-  //     });
-  //   },
-  //   {
-  //     dependencies: [],
-  //     scope: container,
-  //     revertOnUpdate: true,
-  //   }
-  // );
-
   useGSAP(
     () => {
       const textElements = gsap.utils.toArray(".textClass");
@@ -176,7 +123,7 @@ function App() {
           scrollTrigger: {
             trigger: text,
             start: "top 10%",
-            end: "+=600",
+            end: "+=900",
             scrub: true,
             markers: true,
             toggleActions: "restart pause reverse pause",
@@ -187,13 +134,13 @@ function App() {
 
         tl.fromTo(
           text,
-          { autoAlpha: 0},
-          { color: "white", autoAlpha: 1, duration: 5 }
+          { autoAlpha: 0, duration: 4, id: "start-dark" },
+          { color: "white", autoAlpha: 1, duration: 8 }
         )
-          .to(text, {
-            color: "white",
-            duration: 5,
-          })
+          // .to(text, {
+          //   color: "white",
+          //   duration: 5,
+          // })
           .to(text, {
             duration: 3,
             autoAlpha: 0,
@@ -234,10 +181,13 @@ const CanvasAnimation = () => {
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    canvas.width = 1080;
-    canvas.height = 720;
+    // canvas.width = 1080;
+    // canvas.height = 720;
 
-    // Function to generate image URLs based on new source
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // // v.1 : Take images by fetching from url
     // const currentFrame = (index) =>
     //   `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(
     //     index + 1
@@ -245,7 +195,7 @@ const CanvasAnimation = () => {
     //     .toString()
     //     .padStart(4, "0")}.jpg`;
 
-    // v.2 :
+    // // v.2 : Take images from locally from the path imgSequence
     const currentFrame = (index) =>
       `/imgsequence/${(index + 1).toString().padStart(4, "0")}.jpg`;
 
@@ -280,7 +230,7 @@ const CanvasAnimation = () => {
   }, []);
 
   useEffect(() => {
-    render(0);
+    render(0); // TODO : initial render improve code?
 
     if (images.length === frameCount) {
       const sequence = { frame: 0 };

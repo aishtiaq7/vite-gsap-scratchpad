@@ -38,8 +38,9 @@ body {
 }
 
 .textClass{ 
-  opacity:1;
-  color: white;
+  opacity:0;
+  visibility: 0;
+  color: transparent;
 }
 .title{ 
   z-index: 10;
@@ -54,7 +55,7 @@ body {
 
   height: auto;
   /* min-height: 100vh; */
-  background-color: black !important;
+  background-color: coral !important;
 }
 .DISPLAY_NONE { 
   display: none;
@@ -77,7 +78,6 @@ canvas {
   align-items: center;
 
 }
-
+/* 
 .thirdSection {
-  /* background-color: black !important; */
-}
+} */
