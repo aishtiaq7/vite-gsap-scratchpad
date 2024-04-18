@@ -85,41 +85,42 @@ function App() {
   //   }
   // );
 
-  useGSAP(
-    () => {
-      const t1 = gsap.timeline({
-        scrollTrigger: {
-          markers: true,
-          trigger: ".title",
-          start: "top top",
-          end: "+=700",
-          pinSpacing: false,
-          scrub: true,
-          toggleActions: "restart none none none",
-          pin: true,
-          // scrub: 1,
-        },
-      });
-      // t1.to(".title", {
-      //   color: "red",
-      //   opacity: 1,
-      //   duration: 2,
-      // });
-    },
-    {
-      dependencies: [],
-      scope: container,
-      revertOnUpdate: true,
-    }
-  );
+  // TITLE ANIMATION
+  // useGSAP(
+  //   () => {
+  //     const t1 = gsap.timeline({
+  //       scrollTrigger: {
+  //         markers: true,
+  //         trigger: ".title",
+  //         start: "top top",
+  //         end: "+=700",
+  //         pinSpacing: true,
+  //         scrub: true,
+  //         toggleActions: "restart none none none",
+  //         pin: true,
+  //         // scrub: 1,
+  //       },
+  //     });
+  //     // t1.to(".title", {
+  //     //   color: "red",
+  //     //   opacity: 1,
+  //     //   duration: 2,
+  //     // });
+  //   },
+  //   {
+  //     dependencies: [],
+  //     scope: container,
+  //     revertOnUpdate: true,
+  //   }
+  // );
 
   // useEffect(() => {
   //   ScrollTrigger.create({
-  //     trigger: ".title",
+  //     trigger: ".sdf",
   //     start: "top top",
   //     end: "+=700",
   //     pin: true,
-  //     pinSpacing: false,
+  //     pinSpacing: true,
   //     scrub: 1,
   //     markers: true,
   //     toggleActions: "restart none none none",
@@ -129,18 +130,16 @@ function App() {
   return (
     <>
       <div ref={container}>
-        {/* <section className="section"></section> */}
-
-        <h2 className="title">IMAGE SEQUENCE</h2>
-        <section className="forthSection ">
+        {/* <h2 className="title">IMAGE SEQUENCE</h2> */}
+        <section className="imageSeqContainer ">
           <CanvasAnimation />
         </section>
 
-        <section className="section">
-          <h2 className="textClass">3rd Section</h2>
+        <section className="section secondSection">
+          <h2 className="textClass">2nd here</h2>
         </section>
         <section className="section">
-          <h2 className="textClass">3rd Section</h2>
+          <h2 className="textClass">3rd - Content should be here</h2>
         </section>
       </div>
     </>
@@ -180,6 +179,9 @@ const CanvasAnimation = () => {
         img.onerror = () => console.error(`Failed to load image ${i}`);
         img.src = currentFrame(i);
       }
+      if(loadImages.length === frameCount){
+         console.log('loaded framesss!, TODO initital render')
+      }
     }
 
     loadImages();
@@ -210,6 +212,7 @@ const CanvasAnimation = () => {
           end: "bottom 10%",
           scrub: 1.2,
           pin: true,
+          pinSpacing: true,
           onUpdate: (self) => {
             render(Math.floor(sequence.frame));
           },
