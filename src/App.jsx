@@ -238,31 +238,50 @@ const CanvasAnimation = () => {
     };
   }, []);
 
-  useEffect(() => {
-    render(0); // TODO : initial render improve code?
+  useGSAP(() => {
+    render(0); // Initial render
 
     if (images.length === frameCount) {
-      const sequence = { frame: 0 };
-      gsap.to(sequence, {
-        frame: frameCount - 1,
-        snap: "frame",
-        ease: "none",
+      render(0); // Initial render
+  
+      const sequence = { frame: 0 }; // Sequence object to keep track of the frame index
+      const canvasStartY = 0; // Initial Y position of the canvas
+      const canvasEndY = -950; // Final Y position of the canvas (e.g., 200 pixels up)
+  
+      // Create a timeline with a scrollTrigger to manage both animations
+      const timeline = gsap.timeline({
         scrollTrigger: {
           id: "img-sequence",
-          markers: false,
           trigger: canvasRef.current,
           start: "top top",
-          end: "bottom 10%",
+          end: "bottom top", // Adjust this if needed to ensure full visibility throughout the scroll
           scrub: 1.2,
           pin: true,
-          pinSpacing: true,
-          onUpdate: (self) => {
-            render(Math.floor(sequence.frame));
-          },
-        },
+          markers: true, // Useful for debugging
+          onUpdate: self => {
+            // Update the frame based on the progress of the timeline
+            const currentFrame = Math.floor(self.progress * (frameCount - 1));
+            render(currentFrame);
+          }
+        }
       });
+  
+      // Sequence animation for frames
+      timeline.to(sequence, {
+        frame: frameCount - 1,
+        duration: 1, // This duration is arbitrary as the 'scrub' in ScrollTrigger modulates it
+        ease: "none"
+      });
+  
+      // Simultaneous translation of the canvas upward
+      timeline.to(canvasRef.current, {
+        y: canvasEndY, // Move up by 200 pixels
+        duration: 1,
+        ease: "none"
+      }, "<"); // This "<" symbol means that this animation will start at the same time as the previous one
+  
     }
-  }, [images]);
+  }, [images, frameCount, canvasRef]);
 
   function render(index) {
     const ctx = canvasRef.current.getContext("2d");
