@@ -125,7 +125,7 @@ function App() {
             start: "top 50%",
             end: "+=900",
             scrub: true,
-            markers: true,
+            markers: false,
             toggleActions: "restart pause reverse pause",
             pin: true,
             pinSpacing: true,
@@ -163,10 +163,13 @@ function App() {
         </section>
 
         <section className="section secondSection">
-          <h2 className="textClass">2nd here</h2>
+          <h2 className="textClass">As a boy i always had BIG dreams</h2>
         </section>
         <section className="section thirdSection">
-          <h2 className="textClass">3rd - Content should be here</h2>
+          <h2 className="textClass">dreams that i wanna</h2>
+        </section>
+        <section className="section thirdSection">
+          <h2 className="textClass">turn into reality</h2>
         </section>
       </div>
     </>
@@ -176,7 +179,7 @@ function App() {
 const CanvasAnimation = () => {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
-  const frameCount = 147; // Update the frame count according to new image source
+  const frameCount = 74; // Update the frame count according to new image source
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -196,12 +199,18 @@ const CanvasAnimation = () => {
     //     .padStart(4, "0")}.jpg`;
 
     // // v.2 : Take images from locally from the path imgSequence
-    const currentFrame = (index) =>
-      `/imgsequence/${(index + 1).toString().padStart(4, "0")}.jpg`;
+    const currentFrame = (index) => {
+      let res = `/psyboyimgsequence/boysittingsmall_${(index)
+        .toString()
+        .padStart(3, "0")}.png`;
+      return res;
+    };
+    // const currentFrame = (index) =>
+    //   `/imgsequence/${(index + 1).toString().padStart(4, "0")}.jpg`;
 
     function loadImages() {
       let loadedImages = [];
-      for (let i = 0; i < frameCount; i++) {
+      for (let i = 0; i <= frameCount; i++) {
         const img = new Image();
         img.onload = () => {
           if (i === 0) render(0); // Render first image immediately for instant feedback
