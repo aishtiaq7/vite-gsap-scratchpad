@@ -4,6 +4,8 @@ import "./App.css";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ReactLenis } from "@studio-freight/react-lenis";
+
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
@@ -129,6 +131,7 @@ function App() {
             toggleActions: "restart pause reverse pause",
             pin: true,
             pinSpacing: true,
+            // scroller: container.current,
           },
         });
 
@@ -155,24 +158,22 @@ function App() {
   );
 
   return (
-    <>
+    <ReactLenis root options={{ lerp: 0.03, duration: 1.5, smoothTouch: true }}>
       <div ref={container}>
-        {/* <h2 className="title">IMAGE SEQUENCE</h2> */}
-        <section className="imageSeqContainer ">
+        <section className="imageSeqContainer">
           <CanvasAnimation />
         </section>
-
         <section className="section secondSection">
-          <h2 className="textClass">As a boy i always had BIG dreams</h2>
+          <h2 className="textClass">As a boy I always had BIG dreams</h2>
         </section>
         <section className="section thirdSection">
-          <h2 className="textClass">dreams that i wanna</h2>
+          <h2 className="textClass">dreams that I wanna</h2>
         </section>
         <section className="section thirdSection">
           <h2 className="textClass">turn into reality</h2>
         </section>
       </div>
-    </>
+    </ReactLenis>
   );
 }
 
@@ -200,7 +201,7 @@ const CanvasAnimation = () => {
 
     // // v.2 : Take images from locally from the path imgSequence
     const currentFrame = (index) => {
-      let res = `/psyboyimgsequence/boysittingsmall_${(index)
+      let res = `/psyboyimgsequence/boysittingsmall_${index
         .toString()
         .padStart(3, "0")}.png`;
       return res;
@@ -243,11 +244,11 @@ const CanvasAnimation = () => {
 
     if (images.length === frameCount) {
       render(0); // Initial render
-  
+
       const sequence = { frame: 0 }; // Sequence object to keep track of the frame index
       const canvasStartY = 0; // Initial Y position of the canvas
       const canvasEndY = -950; // Final Y position of the canvas (e.g., 200 pixels up)
-  
+
       // Create a timeline with a scrollTrigger to manage both animations
       const timeline = gsap.timeline({
         scrollTrigger: {
@@ -258,28 +259,31 @@ const CanvasAnimation = () => {
           scrub: 1.2,
           pin: true,
           markers: true, // Useful for debugging
-          onUpdate: self => {
+          onUpdate: (self) => {
             // Update the frame based on the progress of the timeline
             const currentFrame = Math.floor(self.progress * (frameCount - 1));
             render(currentFrame);
-          }
-        }
+          },
+        },
       });
-  
+
       // Sequence animation for frames
       timeline.to(sequence, {
         frame: frameCount - 1,
         duration: 1, // This duration is arbitrary as the 'scrub' in ScrollTrigger modulates it
-        ease: "none"
+        ease: "none",
       });
-  
+
       // Simultaneous translation of the canvas upward
-      timeline.to(canvasRef.current, {
-        y: canvasEndY, // Move up by 200 pixels
-        duration: 1,
-        ease: "none"
-      }, "<"); // This "<" symbol means that this animation will start at the same time as the previous one
-  
+      timeline.to(
+        canvasRef.current,
+        {
+          y: canvasEndY, // Move up by 200 pixels
+          duration: 1,
+          ease: "none",
+        },
+        "<"
+      ); // This "<" symbol means that this animation will start at the same time as the previous one
     }
   }, [images, frameCount, canvasRef]);
 
