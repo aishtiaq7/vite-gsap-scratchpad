@@ -79,6 +79,7 @@ canvas {
   align-items: center;
 
 }
-/* 
-.thirdSection {
-} */
+.smallerSections {
+  min-height: 25vh !important;
+
+}

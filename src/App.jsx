@@ -11,111 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 function App() {
   const container = useRef();
 
-  // useGSAP(
-  //   () => {
-  //     const t1 = gsap.timeline({
-  //       scrollTrigger: {
-  //         trigger: boxRef.current,
-
-  //         start: "top 80%",
-  //         end: "top 20%",
-  //         scrub: 2,
-  //         toggleActions: "restart none none none",
-  //       },
-  //     });
-  //     t1.to(boxRef.current, {
-  //       x: -300,
-  //       duration: 3,
-  //     }).to(boxRef.current, {
-  //       x: 0,
-  //       duration: 3,
-  //     });
-
-  //     const t2 = gsap.timeline({
-  //       scrollTrigger: {
-  //         id: "circle",
-  //         markers: false,
-  //         trigger: circleRef.current,
-  //         start: "top 80%",
-  //         end: "top 20%",
-  //         scrub: 2,
-  //         toggleActions: "restart none none none",
-  //         onUpdate: (self) => {
-  //         },
-  //       },
-  //     });
-  //     t2.to(circleRef.current, {
-  //       x: 300,
-  //       duration: 3,
-  //     }).to(circleRef.current, {
-  //       x: 0,
-  //       duration: 3,
-  //     });
-
-  //     //some Text time line:
-  //     const t3 = gsap.timeline({
-  //       scrollTrigger: {
-  //         // markers: true,
-  //         trigger: ".textClass",
-  //         // trigger: someTextRef.current,
-  //         start: "top center",
-  //         end: "+=55%",
-  //         // end: "+=200px",
-  //         scrub: 0.5,
-  //         toggleActions: "restart none none none",
-  //         toggleClass: { targets: ".textClass", className: "is-active" },
-  //       },
-  //     });
-  //     // t3.from(someTextRef.current, {
-  //     //   opacity: 0,
-  //     //   duration: 0.6,
-  //     // })
-  //     //   .to(someTextRef.current, {
-  //     //     color: "white",
-  //     //     opacity: 1,
-  //     //     duration: 2,
-  //     //   })
-  //     //   .to(someTextRef.current, {
-  //     //     opacity: 0,
-  //     //     duration: 2,
-  //     //   });
-  //   },
-  //   {
-  //     dependencies: [],
-  //     scope: container,
-  //     revertOnUpdate: true,
-  //   }
-  // );
-
-  // TITLE ANIMATION
-  // useGSAP(
-  //   () => {
-  //     const t1 = gsap.timeline({
-  //       scrollTrigger: {
-  //         markers: true,
-  //         trigger: ".title",
-  //         start: "top top",
-  //         end: "+=700",
-  //         pinSpacing: true,
-  //         scrub: true,
-  //         toggleActions: "restart none none none",
-  //         pin: true,
-  //         // scrub: 1,
-  //       },
-  //     });
-  //     // t1.to(".title", {
-  //     //   color: "red",
-  //     //   opacity: 1,
-  //     //   duration: 2,
-  //     // });
-  //   },
-  // {
-  //   dependencies: [],
-  //   scope: container,
-  //   revertOnUpdate: true,
-  // }
-  // );
-
+  // FOR : textClass animations GSAP
   useGSAP(
     () => {
       const textElements = gsap.utils.toArray(".textClass");
@@ -127,7 +23,7 @@ function App() {
             start: "top 50%",
             end: "+=900",
             scrub: true,
-            markers: false,
+            markers: true,
             toggleActions: "restart pause reverse pause",
             pin: true,
             pinSpacing: true,
@@ -137,16 +33,18 @@ function App() {
 
         tl.fromTo(
           text,
-          { autoAlpha: 0, duration: 4, id: "start-dark" },
-          { color: "white", autoAlpha: 1, duration: 8 }
+          { autoAlpha: 0, duration: 1, id: "start-dark"}, //from 
+          { color: "white", autoAlpha: 1, duration: 8 }   // to
         )
           // .to(text, {
           //   color: "white",
           //   duration: 5,
           // })
           .to(text, {
-            duration: 3,
+            duration: 2,
             autoAlpha: 0,
+            opacity: 0, 
+            visibility: 0,
           });
       });
     },
@@ -157,8 +55,28 @@ function App() {
     }
   );
 
+  // useGSAP for parallax
+  useGSAP(() => {
+    // Parallax Effect for multiple sections
+    const layers = gsap.utils.toArray('.parallax');
+    layers.forEach(layer => {
+      const depth = layer.dataset.depth;
+      gsap.to(layer, {
+        y: () => -(window.innerHeight * parseFloat(depth)),
+        ease: "none",
+        scrollTrigger: {
+          markers:false,
+          trigger: layer.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    });
+  }, [container.current]);
+
   return (
-    <ReactLenis root options={{ lerp: 0.03, duration: 1.5, smoothTouch: true }}>
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothTouch: true }}>
       <div ref={container}>
         <section className="imageSeqContainer">
           <CanvasAnimation />
@@ -172,6 +90,19 @@ function App() {
         <section className="section thirdSection">
           <h2 className="textClass">turn into reality</h2>
         </section>
+        {/* dummy sections */}
+        <section className="section"></section>
+        {/* Additional Sections for Parallax Effect */}
+        <section className="section smallerSections parallax" data-depth="1" style={{backgroundColor: '#2e8b57', color: 'white'}}>
+          <h2>Normal</h2>
+        </section>
+        <section className="section smallerSections parallax" data-depth="0.8" style={{backgroundColor: '#ff6347'}}>
+        <section className="section smallerSections parallax" data-depth="1.2" style={{backgroundColor: '#4682b4'}}>
+          <h2>Faster </h2>
+        </section>
+          <h2>Slow </h2>
+        </section>
+      
       </div>
     </ReactLenis>
   );
