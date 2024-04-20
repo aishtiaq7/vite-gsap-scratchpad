@@ -144,26 +144,25 @@ const CanvasAnimation = ({ setIsLoading }) => {
       return res;
     };
 
-    const loadedImages = [];
-    let imagesLoaded = 0;
-    for (let i = 0; i < frameCount; i++) {
-      console.log("i==>", i);
-      const img = new Image();
-      // img.src = `/psyboyimgsequence/boysittingsmall_${i.toString().padStart(3, "0")}.png`;
-      img.src = currentFrame(i);
-      img.onload = () => {
-        loadedImages[i] = img;
-        imagesLoaded++;
-        if (imagesLoaded === frameCount) {
-          console.log("here");
-          setImages(loadedImages);
-          setIsLoading(false); // Set loading to false only when all images are loaded
-        }
-      };
-      img.onerror = () => {
-        console.error(`Failed to load image ${i}`);
-      };
-    }
+    const imagePromises = Array.from(
+      { length: frameCount },
+      (_, i) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => reject(new Error(`Failed to load image ${i}`));
+          img.src = currentFrame(i);
+        })
+    );
+
+    Promise.allSettled(imagePromises).then((results) => {
+      const loadedImages = results.flatMap((result, index) =>
+        result.status === "fulfilled" ? [result.value] : []
+      );
+      console.log(`Loaded ${loadedImages.length} out of ${frameCount} images`);
+      setImages(loadedImages);
+      setIsLoading(false);
+    });
 
     return () => {
       window.removeEventListener("resize", () => {
@@ -174,12 +173,12 @@ const CanvasAnimation = ({ setIsLoading }) => {
     };
   }, []);
 
+  // IMG sequence change
   useGSAP(() => {
     render(0); // Initial render
 
     if (images.length === frameCount) {
       render(0); // Initial render
-
       const sequence = { frame: 0 }; // Sequence object to keep track of the frame index
       const canvasStartY = 0; // Initial Y position of the canvas
       const canvasEndY = -950; // Final Y position of the canvas (e.g., 200 pixels up)
