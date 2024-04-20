@@ -1,9 +1,11 @@
-*, body, html {
+*,
+body,
+html {
   margin: 0;
   padding: 0;
 }
 
-body { 
+body {
   background-color: black;
 }
 
@@ -13,10 +15,9 @@ body {
   width: 100%;
   text-align: center;
 }
-body { 
+body {
   width: 100vw;
 }
-
 
 .section {
   min-height: 100vh;
@@ -24,7 +25,6 @@ body {
 
   /* background-color: pink; */
   /* border: 2px dotted red; */
-
 }
 
 .section:nth-child(3) {
@@ -37,17 +37,17 @@ body {
   position: relative;
 }
 
-.textClass{ 
-  opacity:0;
+.textClass {
+  opacity: 0;
   visibility: 0;
   color: transparent;
 }
-.title{ 
+.title {
   z-index: 10;
   width: 100%;
   background-color: transparent;
 }
-.imageSeqContainer{ 
+.imageSeqContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,11 +58,11 @@ body {
   background-color: coral !important;
   background-color: black !important;
 }
-.DISPLAY_NONE { 
+.DISPLAY_NONE {
   display: none;
   height: 0;
 }
-.canvasStyle{
+.canvasStyle {
   border: 4px solid black;
 }
 canvas {
@@ -71,15 +71,24 @@ canvas {
   display: block;
 }
 
-.secondSection{
+.secondSection {
   /* z-index: 12; */
   /* background-color: lightblue; */
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 .smallerSections {
   min-height: 25vh !important;
+}
 
+.spinnerCotnaienr {
+  width: 100vw;
+  height: 100vw;
+  background-color: white;
+
+  color: black;
+  display: flex;
+  justify-self: center;
+  align-items: center;
 }

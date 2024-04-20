@@ -23,7 +23,7 @@ function App() {
             start: "top 50%",
             end: "+=900",
             scrub: true,
-            markers: true,
+            markers: false,
             toggleActions: "restart pause reverse pause",
             pin: true,
             pinSpacing: true,
@@ -33,8 +33,8 @@ function App() {
 
         tl.fromTo(
           text,
-          { autoAlpha: 0, duration: 1, id: "start-dark"}, //from 
-          { color: "white", autoAlpha: 1, duration: 8 }   // to
+          { autoAlpha: 0, duration: 1, id: "start-dark" }, //from
+          { color: "white", autoAlpha: 1, duration: 8 } // to
         )
           // .to(text, {
           //   color: "white",
@@ -43,7 +43,7 @@ function App() {
           .to(text, {
             duration: 2,
             autoAlpha: 0,
-            opacity: 0, 
+            opacity: 0,
             visibility: 0,
           });
       });
@@ -58,14 +58,14 @@ function App() {
   // useGSAP for parallax
   useGSAP(() => {
     // Parallax Effect for multiple sections
-    const layers = gsap.utils.toArray('.parallax');
-    layers.forEach(layer => {
+    const layers = gsap.utils.toArray(".parallax");
+    layers.forEach((layer) => {
       const depth = layer.dataset.depth;
       gsap.to(layer, {
         y: () => -(window.innerHeight * parseFloat(depth)),
         ease: "none",
         scrollTrigger: {
-          markers:false,
+          markers: false,
           trigger: layer.current,
           start: "top bottom",
           end: "bottom top",
@@ -75,11 +75,16 @@ function App() {
     });
   }, [container.current]);
 
+  const [isLoading, setIsLoading] = useState(true); // Central loading state for the application
+  console.log("isloading: ", isLoading);
+  if (false) {
+    return <div className="spinnerContainer">Loading...</div>;
+  }
   return (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothTouch: true }}>
       <div ref={container}>
         <section className="imageSeqContainer">
-          <CanvasAnimation />
+          <CanvasAnimation setIsLoading={setIsLoading} />
         </section>
         <section className="section secondSection">
           <h2 className="textClass">As a boy I always had BIG dreams</h2>
@@ -92,74 +97,73 @@ function App() {
         </section>
         {/* dummy sections */}
         <section className="section"></section>
+        <section className="section"></section>
         {/* Additional Sections for Parallax Effect */}
-        <section className="section smallerSections parallax" data-depth="1" style={{backgroundColor: '#2e8b57', color: 'white'}}>
+        <section
+          className="section smallerSections parallax"
+          data-depth="1"
+          style={{ backgroundColor: "#2e8b57", color: "white" }}
+        >
           <h2>Normal</h2>
         </section>
-        <section className="section smallerSections parallax" data-depth="0.8" style={{backgroundColor: '#ff6347'}}>
-        <section className="section smallerSections parallax" data-depth="1.2" style={{backgroundColor: '#4682b4'}}>
-          <h2>Faster </h2>
-        </section>
+        <section
+          className="section smallerSections parallax"
+          data-depth="0.8"
+          style={{ backgroundColor: "#ff6347" }}
+        >
+          <section
+            className="section smallerSections parallax"
+            data-depth="1.2"
+            style={{ backgroundColor: "#4682b4" }}
+          >
+            <h2>Faster </h2>
+          </section>
           <h2>Slow </h2>
         </section>
-      
       </div>
     </ReactLenis>
   );
 }
 
-const CanvasAnimation = () => {
+const CanvasAnimation = ({ setIsLoading }) => {
   const canvasRef = useRef(null);
   const [images, setImages] = useState([]);
-  const frameCount = 74; // Update the frame count according to new image source
+  const frameCount = 74;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
-    // canvas.width = 1080;
-    // canvas.height = 720;
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // // v.1 : Take images by fetching from url
-    // const currentFrame = (index) =>
-    //   `https://www.apple.com/105/media/us/airpods-pro/2019/1299e2f5_9206_4470_b28e_08307a42f19b/anim/sequence/large/01-hero-lightpass/${(
-    //     index + 1
-    //   )
-    //     .toString()
-    //     .padStart(4, "0")}.jpg`;
-
-    // // v.2 : Take images from locally from the path imgSequence
     const currentFrame = (index) => {
       let res = `/psyboyimgsequence/boysittingsmall_${index
         .toString()
         .padStart(3, "0")}.png`;
       return res;
     };
-    // const currentFrame = (index) =>
-    //   `/imgsequence/${(index + 1).toString().padStart(4, "0")}.jpg`;
 
-    function loadImages() {
-      let loadedImages = [];
-      for (let i = 0; i <= frameCount; i++) {
-        const img = new Image();
-        img.onload = () => {
-          if (i === 0) render(0); // Render first image immediately for instant feedback
-          loadedImages[i] = img; // Assign to index to maintain order
-          if (loadedImages.filter(Boolean).length === frameCount) {
-            setImages(loadedImages); // Only update state when all images are loaded
-          }
-        };
-        img.onerror = () => console.error(`Failed to load image ${i}`);
-        img.src = currentFrame(i);
-      }
-      if (loadImages.length === frameCount) {
-        console.log("loaded framesss!, TODO initital render");
-      }
+    const loadedImages = [];
+    let imagesLoaded = 0;
+    for (let i = 0; i < frameCount; i++) {
+      console.log("i==>", i);
+      const img = new Image();
+      // img.src = `/psyboyimgsequence/boysittingsmall_${i.toString().padStart(3, "0")}.png`;
+      img.src = currentFrame(i);
+      img.onload = () => {
+        loadedImages[i] = img;
+        imagesLoaded++;
+        if (imagesLoaded === frameCount) {
+          console.log("here");
+          setImages(loadedImages);
+          setIsLoading(false); // Set loading to false only when all images are loaded
+        }
+      };
+      img.onerror = () => {
+        console.error(`Failed to load image ${i}`);
+      };
     }
-
-    loadImages();
 
     return () => {
       window.removeEventListener("resize", () => {
