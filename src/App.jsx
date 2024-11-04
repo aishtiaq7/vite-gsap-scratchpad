@@ -75,13 +75,13 @@ function App() {
     });
   }, [container.current]);
 
-  const [isLoading, setIsLoading] = useState(true); // Central loading state for the application
+  const [isLoading, setIsLoading] = useState(true); // Central loading state for the application 
   console.log("isloading: ", isLoading);
   if (false) {
     return <div className="spinnerContainer">Loading...</div>;
   }
   return (
-    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothTouch: true }}>
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothTouch: true }}> 
       <div ref={container}>
         <section className="imageSeqContainer">
           <CanvasAnimation setIsLoading={setIsLoading} />
